@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17130f">
+<title>CASO 001 · Valdemora</title>
+<style>
+:root{--bg:#17130f;--panel:#251d17;--paper:#ead9b9;--ink:#251b14;--gold:#c9a66b;--red:#8d3f34;--muted:#bca98c}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#33271d,#17130f 55%);color:#eee5d4;font-family:Georgia,serif}
+button{font:inherit}.wrap{max-width:1000px;margin:auto;padding:16px}.top{position:sticky;top:0;z-index:10;background:#17130fee;backdrop-filter:blur(10px);border-bottom:1px solid #66523a;padding:10px 0}
+.brand{display:flex;justify-content:space-between;gap:10px;align-items:center}.brand b{letter-spacing:2px;color:var(--gold)}.status{font-size:12px;color:var(--muted)}
+.card{background:linear-gradient(145deg,#2a211a,#211914);border:1px solid #6d583d;border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 12px 30px #0007}
+h1,h2{margin:5px 0 10px;color:var(--gold)} h1{font-size:28px} h2{font-size:20px}.lead{color:#d7c8ad;line-height:1.55}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.tab,.action{background:#3a2b20;color:#f1e5d1;border:1px solid #806845;border-radius:10px;padding:10px 12px;cursor:pointer}.tab.active,.action.primary{background:#74502f;border-color:#d0ae74}
+.map{position:relative;min-height:560px;border-radius:14px;overflow:hidden;border:1px solid #90764e;background:
+linear-gradient(135deg,#263322 0 35%,#1d291b 35% 65%,#2d3824 65%);isolation:isolate}
+.map:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 25%,#60714855 0 2px,transparent 3px),radial-gradient(circle at 70% 70%,#6a754e55 0 2px,transparent 3px);background-size:44px 44px;opacity:.5;z-index:-1}
+.path{position:absolute;height:14px;background:#9b845d;border:2px solid #c2a875;border-radius:50%;transform-origin:left center;opacity:.8}
+.zone{position:absolute;border:1px solid #d0b37b;background:#35281ddd;color:#f4ead9;border-radius:10px;padding:9px 8px;cursor:pointer;box-shadow:0 5px 12px #0008;min-width:110px}
+.zone:hover,.zone:focus{background:#6c4b2d;transform:translateY(-1px)}
+.house{position:absolute;left:32%;top:25%;width:37%;height:38%;background:#766044;border:4px solid #c7aa75;border-radius:8px;box-shadow:0 12px 30px #0009}
+.house:before{content:"";position:absolute;left:-4%;top:-17%;width:108%;height:25%;background:#3d2118;border:3px solid #b08e5e;clip-path:polygon(50% 0,100% 100%,0 100%);transform:rotate(0deg)}
+.room{position:absolute;background:#d7c29c;color:#2b2018;border:2px solid #684b30;padding:7px;border-radius:5px;font-size:12px;font-weight:bold;cursor:pointer}
+.legend{display:flex;gap:8px;flex-wrap:wrap;color:#d0c0a4;font-size:12px;margin-top:10px}.legend span{border:1px solid #69553c;border-radius:20px;padding:5px 8px}
+.panel{margin-top:12px;padding:14px;background:#15110e;border:1px solid #765d3d;border-left:4px solid var(--gold);border-radius:10px;line-height:1.55}
+.hidden{display:none}.clues{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.clue{background:#efe1c4;color:#2b2018;border-radius:10px;padding:12px;border:2px solid #a58a62;cursor:pointer}.clue.locked{filter:grayscale(1);opacity:.45;cursor:not-allowed}.clue small{display:block;color:#6a5138;margin-top:5px}
+.timeline{border-left:2px solid #8e714a;padding-left:16px}.event{margin:0 0 14px}.event b{color:var(--gold)}
+.modal{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}.modalbox{max-width:620px;width:100%;max-height:90vh;overflow:auto;background:#241b15;border:1px solid #b08b59;border-radius:16px;padding:20px;box-shadow:0 20px 60px #000}.close{float:right;background:none;border:0;color:#ddd;font-size:24px;cursor:pointer}
+input{width:100%;background:#120f0c;border:1px solid #806845;color:#f4ead9;padding:12px;border-radius:9px;margin:8px 0}
+.success{color:#d9c184}.danger{color:#df9a8d}
+.gift{background:linear-gradient(145deg,#342015,#17100c);border:1px solid #a16d45}
+.footer{text-align:center;color:#806e55;font-size:11px;padding:18px}
+@media(max-width:650px){.map{min-height:620px}.house{left:22%;top:28%;width:56%;height:36%}.zone{min-width:92px;font-size:12px;padding:8px 5px}.room{font-size:10px;padding:5px}h1{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap brand"><b>CASO 001 · VALDEMORA</b><span class="status" id="status">Investigación: 0/7 pistas</span></div></div>
+<div class="wrap">
+<section class="card">
+<h1>El último fin de semana</h1>
+<p class="lead">Este es el teléfono de investigación de Laura y Jorge. Toca las zonas del mapa, examina las estancias y desbloquea las pistas en el orden que vayáis descubriendo la historia.</p>
+<div class="tabs">
+<button class="tab active" onclick="tab('mapa',this)">🗺️ Finca</button>
+<button class="tab" onclick="tab('casa',this)">🏠 Casa</button>
+<button class="tab" onclick="tab('pistas',this)">🔎 Pistas</button>
+<button class="tab" onclick="tab('cronologia',this)">⏱️ Cronología</button>
+</div>
+</section>
+
+<section id="mapa" class="view card">
+<h2>Mapa de la finca</h2>
+<p class="lead">Pulsa cada lugar. Algunas zonas revelan información y otras solo cuando hayáis encontrado la pista correspondiente.</p>
+<div class="map">
+  <div class="path" style="left:8%;top:78%;width:34%;transform:rotate(-17deg)"></div>
+  <div class="path" style="left:39%;top:67%;width:29%;transform:rotate(-10deg)"></div>
+  <div class="path" style="left:67%;top:54%;width:22%;transform:rotate(22deg)"></div>
+  <button class="zone" style="left:4%;top:72%" onclick="zone('entrada')">🚪 Entrada</button>
+  <button class="zone" style="left:4%;top:40%" onclick="zone('camino')">🛤️ Camino</button>
+  <button class="zone" style="left:9%;top:14%" onclick="zone('pozo')">🪨 Zona antigua</button>
+  <button class="house" onclick="zone('casa')"><b>CASA VALDEMORA</b><br><span style="color:#f2e8d3">Pulsa para entrar</span>
+    <button class="room" style="left:6%;top:18%;width:28%" onclick="event.stopPropagation();room('salon')">Salón</button>
+    <button class="room" style="left:66%;top:18%;width:28%" onclick="event.stopPropagation();room('cocina')">Cocina</button>
+    <button class="room" style="left:6%;top:56%;width:28%" onclick="event.stopPropagation();room('pasillo')">Pasillo</button>
+    <button class="room" style="left:66%;top:56%;width:28%" onclick="event.stopPropagation();room('samuel')">Habitación Samuel</button>
+  </button>
+  <button class="zone" style="left:71%;top:17%" onclick="zone('bosque')">🌲 Bosque</button>
+  <button class="zone" style="left:72%;top:68%" onclick="zone('lateral')">🚪 Acceso lateral</button>
+  <button class="zone" style="left:41%;top:75%" onclick="zone('jardin')">🌿 Jardín</button>
+</div>
+<div id="mapPanel" class="panel hidden"></div>
+<div class="legend"><span>🏠 Casa</span><span>🚪 Acceso</span><span>🌲 Exterior</span><span>🔎 Zona de interés</span></div>
+</section>
+
+<section id="casa" class="view card hidden">
+<h2>Plano de la casa</h2>
+<p class="lead">Cada estancia puede contener una observación. La habitación de Samuel es la escena principal.</p>
+<div class="clues">
+<button class="clue" onclick="room('salon')">🛋️ Salón<small>Conversaciones y coartadas</small></button>
+<button class="clue" onclick="room('cocina')">🍷 Cocina<small>Testimonios cruzados</small></button>
+<button class="clue" onclick="room('pasillo')">🚶 Pasillo<small>Ruidos durante el apagón</small></button>
+<button class="clue" onclick="room('samuel')">🕵️ Habitación de Samuel<small>Escena principal</small></button>
+<button class="clue" onclick="room('servicio')">🔑 Puerta de servicio<small>Acceso lateral</small></button>
+</div>
+<div id="housePanel" class="panel hidden"></div>
+</section>
+
+<section id="pistas" class="view card hidden">
+<h2>Panel de evidencias</h2>
+<p class="lead">Las siete pistas se desbloquean mediante pequeñas pruebas. No hace falta escribir nada fuera de esta pantalla.</p>
+<div class="clues" id="clues"></div>
+<div id="cluePanel" class="panel hidden"></div>
+</section>
+
+<section id="cronologia" class="view card hidden">
+<h2>Línea temporal</h2>
+<div class="timeline">
+<div class="event"><b>23:19</b> · Conversación entre Samuel e Inés.</div>
+<div class="event"><b>23:47</b> · Samuel entra en su habitación con la carpeta.</div>
+<div class="event"><b>23:50</b> · Inés entra en la habitación.</div>
+<div class="event"><b>23:56</b> · Apagón.</div>
+<div class="event"><b>00:06</b> · El reloj queda detenido alrededor de esta hora.</div>
+<div class="event"><b>00:09</b> · Regresa la luz.</div>
+<div class="event"><b>00:17</b> · Encuentran a Samuel.</div>
+</div>
+</section>
+
+<section class="card">
+<h2>🔐 Desbloqueo final</h2>
+<p class="lead">Cuando Laura crea tener la solución, introduce el nombre de la persona responsable.</p>
+<input id="answer" placeholder="Nombre de la persona responsable">
+<button class="action primary" onclick="checkFinal()">Comprobar acusación</button>
+<div id="finalPanel" class="panel hidden"></div>
+</section>
+
+<section id="giftSection" class="card gift hidden">
+<h2>🎁 EXPEDIENTE FINAL — LAURA</h2>
+<p class="lead">Caso resuelto. Ahora comienza la parte importante del expediente.</p>
+<div style="padding:15px;background:#efe1c4;color:#251b14;border-radius:10px">
+<b>INVITACIÓN ESPECIAL PARA LA INVESTIGADORA LAURA ❤️</b><br><br>
+Has sobrevivido a Valdemora, interrogado a todos, seguido las pistas y descubierto la verdad.<br><br>
+Pero este caso tenía una última recompensa:<br><br>
+<h2 style="color:#8d3f34">UNA NOCHE JUNTOS EN STREETXO MADRID</h2>
+<p>Buena comida, buen rollo, muchas risas y tú y yo.</p>
+<p><b>Feliz cumpleaños, mi chica. ❤️</b></p>
+</div>
+</section>
+<div class="footer">VALDEMORA · EXPERIENCIA DE INVESTIGACIÓN · CASO 001</div>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modalbox"><button class="close" onclick="closeModal()">×</button><div id="modalContent"></div></div></div>
+
+<script>
+const clues=[
+{id:1,title:"La carpeta marrón",req:0,txt:"Samuel había vuelto con documentos sobre el secreto de hace once años. La carpeta desaparece después de la muerte."},
+{id:2,title:"El apagón",req:1,txt:"El apagón comienza a las 23:56 y crea una ventana en la que alguien puede moverse sin ser visto."},
+{id:3,title:"El reloj",req:2,txt:"El reloj de la habitación queda detenido alrededor de las 00:06. No es por sí solo una hora exacta de muerte, pero encaja con la ventana."},
+{id:4,title:"La puerta lateral",req:3,txt:"La puerta de emergencia ofrece una salida alternativa. Jhonatan la había revisado antes y dejó el mecanismo preparado accidentalmente."},
+{id:5,title:"La conversación",req:4,txt:"Samuel e Inés discutieron porque Samuel se negaba a callar y ella quería recuperar los documentos."},
+{id:6,title:"La caída",req:5,txt:"La muerte ocurre durante el forcejeo: Samuel pierde el equilibrio y la caída resulta mortal. No hay un arma premeditada en la reconstrucción."},
+{id:7,title:"La decisión",req:6,txt:"La clave final: Inés, al comprender lo ocurrido, decide no pedir ayuda, toma la carpeta y utiliza el acceso lateral para escapar."}
+];
+let progress=Number(localStorage.getItem('valdemora_progress')||0);
+function update(){document.getElementById('status').textContent=`Investigación: ${progress}/7 pistas`;renderClues();}
+function renderClues(){
+ const el=document.getElementById('clues'); el.innerHTML='';
+ clues.forEach((c,i)=>{
+  const b=document.createElement('button'); b.className='clue'+(i>=progress?' locked':'');
+  b.innerHTML=(i<progress?'🔓 ':'🔒 ')+c.title+`<small>${i<progress?'Pista disponible':'Desbloquea la anterior'}</small>`;
+  b.onclick=()=>{if(i<progress){showClue(c)}else if(i===progress){unlock(i)}};
+  el.appendChild(b);
+ });
+}
+function unlock(i){
+ const questions=[
+ ["PRUEBA 1","¿Qué objeto falta de la habitación de Samuel?","carpeta"],
+ ["PRUEBA 2","¿A qué hora comienza el apagón?","23:56"],
+ ["PRUEBA 3","¿Qué hora marca el reloj?","00:06"],
+ ["PRUEBA 4","¿Quién había revisado accidentalmente el mecanismo de la puerta?","jhonatan"],
+ ["PRUEBA 5","¿Con quién discutió Samuel?","ines"],
+ ["PRUEBA 6","¿Qué ocurre durante el forcejeo?","caida"],
+ ["PRUEBA 7","¿Qué hizo Inés después?","carpeta"]
+ ];
+ const q=questions[i];
+ openModal(`<h2>${q[0]}</h2><p>${q[1]}</p><input id="qinput" placeholder="Escribe tu respuesta"><button class="action primary" onclick="answer(${i},'${q[2]}')">Desbloquear</button><p class="small">No distingue mayúsculas de minúsculas.</p>`);
+}
+function answer(i,correct){
+ let v=document.getElementById('qinput').value.trim().toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');
+ let c=correct.normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');
+ if(v.includes(c)|| (i===0&&v.includes('carpeta')) || (i===5&&v.includes('caida'))){progress=i+1;localStorage.setItem('valdemora_progress',progress);closeModal();showClue(clues[i]);update();}
+ else alert('No encaja con las pruebas. Revisad las pistas antes de continuar.');
+}
+function showClue(c){document.getElementById('cluePanel').innerHTML=`<b>PISTA ${c.id} · ${c.title}</b><br>${c.txt}`;document.getElementById('cluePanel').classList.remove('hidden');}
+function tab(id,btn){document.querySelectorAll('.view').forEach(x=>x.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');}
+function zone(k){
+ const d={entrada:["Entrada principal","Aquí comienza la historia. Todos llegaron por este camino."],camino:["Camino de llegada","Samuel llegó con una carpeta que contenía documentos sobre el pasado de Valdemora."],pozo:["Zona antigua","Esta zona conecta con el secreto de hace once años. No es la escena del crimen."],bosque:["Bosque","La oscuridad y la lluvia dificultaron ver movimientos desde la casa."],jardin:["Jardín","Django estuvo por aquí durante la noche y reaccionó ante movimientos extraños."],lateral:["Acceso lateral","Punto crítico. La puerta podía abrirse gracias al mecanismo que Jhonatan había revisado accidentalmente."],casa:["Casa Valdemora","Pulsa las estancias del interior para continuar la reconstrucción."]};
+ const x=d[k]; document.getElementById('mapPanel').innerHTML=`<b>${x[0]}</b><br>${x[1]}`;document.getElementById('mapPanel').classList.remove('hidden');
+}
+function room(k){
+ const d={salon:["Salón","Aquí se cruzan las coartadas y comienzan las primeras preguntas."],cocina:["Cocina","Conversaciones y movimientos de los invitados."],pasillo:["Pasillo","Durante el apagón se escuchan pasos que nadie identifica con seguridad."],samuel:["Habitación de Samuel","Samuel es encontrado aquí a las 00:17. Están el vaso, el reloj y las pistas del acceso; la carpeta ha desaparecido."],servicio:["Puerta de servicio","Salida lateral relacionada con el movimiento de Inés durante el apagón."]};
+ const x=d[k];document.getElementById('housePanel').innerHTML=`<b>${x[0]}</b><br>${x[1]}`;document.getElementById('housePanel').classList.remove('hidden');document.getElementById('casa').scrollIntoView({behavior:'smooth'});
+}
+function checkFinal(){
+ let v=document.getElementById('answer').value.trim().toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');
+ const ok=v.includes('ines')||v.includes('inés');
+ const p=document.getElementById('finalPanel');p.classList.remove('hidden');
+ if(ok&&progress>=7){p.innerHTML='<span class="success"><b>ACUSACIÓN CORRECTA.</b><br>Has reconstruido el caso. El expediente final está desbloqueado.</span>';document.getElementById('giftSection').classList.remove('hidden');document.getElementById('giftSection').scrollIntoView({behavior:'smooth'});}
+ else if(!ok){p.innerHTML='<span class="danger">La acusación no encaja todavía. Volved a las pistas y reconstruid la secuencia.</span>';}
+ else {p.innerHTML='<span class="danger">La persona encaja, pero todavía faltan pistas por desbloquear.</span>';}
+}
+function openModal(c){document.getElementById('modalContent').innerHTML=c;document.getElementById('modal').classList.remove('hidden')}
+function closeModal(){document.getElementById('modal').classList.add('hidden')}
+update();
+</script>
+</body>
+</html>
